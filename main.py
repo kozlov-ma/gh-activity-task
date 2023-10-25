@@ -6,15 +6,15 @@ import click
 import loguru
 
 import state
-import stats
+import outputs
 import rate_limit
 
 PAGE_COUNT_REGEX = re.compile('(?<=&page=)\d+')
 
 
 @click.command()
-@click.argument("org_name", type=click.STRING, default="charmbracelet")
-@click.argument("n_authors", type=click.INT, default=20)
+@click.argument("org_name", type=click.STRING, default="twitter")
+@click.argument("n_authors", type=click.INT, default=100)
 @click.option("--show-graph", is_flag=True)
 def main(org_name, n_authors, show_graph):
     asyncio.run(async_main(org_name, n_authors, show_graph))
@@ -38,9 +38,9 @@ async def async_main(org_name, n_authors, show_graph):
         loguru.logger.info(rl)
 
     if show_graph:
-        await (stats.gui_output(st, n_authors, org_name))
+        await (outputs.gui_output(st, n_authors, org_name))
     else:
-        await (stats.cli_output(st, n_authors, org_name))
+        await (outputs.cli_output(st, n_authors, org_name))
 
     await st.shutdown()
 
