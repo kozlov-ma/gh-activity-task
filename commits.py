@@ -8,8 +8,8 @@ from http import HTTPStatus
 from loguru import logger
 
 from main import PAGE_COUNT_REGEX
-from state import State
 from repos import Repository
+from state import State
 from utils import counter_sum
 
 
@@ -44,7 +44,7 @@ async def count_authors_for_page(st: State, repo: Repository, page: int,
             return authors
         else:
             logger.error(
-                f"Couldn't receive commits for '{repo.full_name}', page {page}, {per_page} per page. (HTTP Status: {resp.status})")
+                f"Couldn't receive commits for '{repo.full_name}', page {page}, {per_page} per page. (HTTP Status: {resp.status}).")
             return Counter()
 
 

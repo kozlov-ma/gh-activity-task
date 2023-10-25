@@ -28,7 +28,7 @@ async def repos_total(st: State, org_name: str) -> int:
             count = int(re.findall(PAGE_COUNT_REGEX, resp.headers['Link'])[-1])
             return count
         else:
-            logger.error(f"Couldn't get info about repositories (HTTP Status: {resp.status})")
+            logger.error(f"Couldn't get info about repositories (HTTP Status: {resp.status}).")
             return 0
 
 
