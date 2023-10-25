@@ -21,7 +21,8 @@ async def commits_total(st: State, repo: Repository) -> int:
             return count
         else:
             logger.error(
-                f"Couldn't get info about commits in '{repo.full_name}'")
+                f"Couldn't get info about commits in '{repo.full_name} (HTTP "
+                f"Status: {resp.status})'")
             return 0
 
 
@@ -41,19 +42,18 @@ async def count_authors_for_page(st: State, repo: Repository, page: int,
             return authors
         else:
             logger.error(
-                f"Couldn't receive commits for '{repo.full_name}', page {page}, {per_page} per page.")
+                f"Couldn't receive commits for '{repo.full_name}', page {page}, {per_page} per page. (HTTP Status: {resp.status})")
             return Counter()
 
 
 async def count_repo_authors(st: State, repo: Repository) -> Counter:
     logger.info(f"Counting commits in '{repo.full_name}'")
     tasks = []
-    async with st.client.get(repo.actual_commits_url()) as resp:
-        for page in range(0, math.ceil(await commits_total(st, repo) / 100)):
-            tasks.append(count_authors_for_page(st, repo, page, 100))
+    for page in range(0, math.ceil(await commits_total(st, repo) / 100)):
+        tasks.append(count_authors_for_page(st, repo, page, 100))
 
-        authors = counter_sum(await asyncio.gather(*tasks))
-        logger.info(
-            f"Found {len(authors)} authors in '{repo.full_name}'. {sum(authors.values())} contributions in total")
+    authors = counter_sum(await asyncio.gather(*tasks))
+    logger.info(
+        f"Found {len(authors)} authors in '{repo.full_name}'. {sum(authors.values())} contributions in total")
 
-        return authors
+    return authors

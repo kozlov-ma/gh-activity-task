@@ -28,7 +28,7 @@ async def repos_total(st: State, org_name: str) -> int:
             count = int(re.findall(PAGE_COUNT_REGEX, resp.headers['Link'])[-1])
             return count
         else:
-            logger.error("Couldn't get info about repositories..")
+            logger.error(f"Couldn't get info about repositories (HTTP Status: {resp.status})")
             return 0
 
 
@@ -46,7 +46,7 @@ async def repos_for_page(st: State, org_name: str, page: int,
             return repos
         else:
             raise RuntimeError(
-                f"Couldn't receive repositories for {org_name}, page {page}, {per_page} per page.")
+                f"Couldn't receive repositories for {org_name}, page {page}, {per_page} per page. (HTTP Status: {resp.status})")
 
 
 async def repos(st: State, org_name: str) -> list[Repository]:
