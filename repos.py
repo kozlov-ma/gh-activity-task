@@ -43,6 +43,7 @@ async def repos_for_page(st: State, org_name: str, page: int,
             for repo in body:
                 repos.append(Repository(repo['full_name'], repo['commits_url']))
 
+            await asyncio.sleep(1)  # lots of 403s, hope this helps
             return repos
         else:
             raise RuntimeError(

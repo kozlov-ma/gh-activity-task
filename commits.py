@@ -39,6 +39,8 @@ async def count_authors_for_page(st: State, repo: Repository, page: int,
                     continue
 
                 authors[commit['author']['email']] += 1
+
+            await asyncio.sleep(1)  # lots of 403s, hope this helps
             return authors
         else:
             logger.error(
